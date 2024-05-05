@@ -1,7 +1,12 @@
 package mouse.univ.algorithm.common;
 
 public class Bit {
-    private boolean value;
+    private final boolean value;
+
+    @Override
+    public String toString() {
+        return "Bit{" + (value ? "1" : "0") + "}";
+    }
 
     public Bit(boolean value) {
         this.value = value;

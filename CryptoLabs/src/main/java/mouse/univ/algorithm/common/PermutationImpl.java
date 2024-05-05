@@ -14,11 +14,13 @@ public class PermutationImpl implements Permutation {
                     " and table of size " +
                     table.length);
         }
-        BitArr result = new CBitArr();
-        for (int bit : table) {
+        BitArr result = new BitArr(initial.length());
+        for (int i = 0; i < initial.length(); i++) {
+            int bit = table[i];
             Bit currentBit = initial.bitAt(bit);
-            result.pushBit(currentBit);
+            result.setBit(i, currentBit);
         }
+
         return result;
     }
 }

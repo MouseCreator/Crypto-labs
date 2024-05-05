@@ -8,7 +8,11 @@ import java.security.SecureRandom;
 @Service
 public class SeededKeyGenerator implements KeyGenerator {
     private final SecureRandom random;
-
+    private static final long DEFAULT_SEED = 85495343L;
+    public SeededKeyGenerator() {
+        byte[] array = extractBytes(DEFAULT_SEED);
+        this.random = new SecureRandom(array);
+    }
     public SeededKeyGenerator(long seed) {
         byte[] array = extractBytes(seed);
         this.random = new SecureRandom(array);

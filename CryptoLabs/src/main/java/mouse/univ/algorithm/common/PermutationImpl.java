@@ -14,8 +14,13 @@ public class PermutationImpl implements Permutation {
                     " and table of size " +
                     table.length);
         }
-        BitArr result = new BitArr(initial.length());
-        for (int i = 0; i < initial.length(); i++) {
+        return applyExtendedPermutation(initial, table);
+    }
+
+    @Override
+    public BitArr applyExtendedPermutation(BitArr initial, int[] table) {
+        BitArr result = new BitArr(table.length);
+        for (int i = 0; i < table.length; i++) {
             int bit = table[i];
             Bit currentBit = initial.bitAt(bit);
             result.setBit(i, currentBit);

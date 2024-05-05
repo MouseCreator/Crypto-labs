@@ -21,6 +21,33 @@ public class BitArr {
 
     }
 
+    public static BitArr fromInt(int intValue, int bufferSize) {
+        BitArr bitArr = new BitArr(bufferSize);
+        for (int i = 0; i < bufferSize; i++) {
+            if ((intValue & (1 << i)) != 0) {
+                bitArr.setBit(i, Bit.one());
+            }
+        }
+        return bitArr;
+    }
+
+    public static BitArr mergeAll(BitArr[] orderedArr) {
+        int expectedSize = 0;
+        for (int i = 0; i < orderedArr.length; i++) {
+            expectedSize += orderedArr.length;
+        }
+
+        BitArr result = new BitArr(expectedSize);
+        int k = 0;
+        for (BitArr currentArr : orderedArr) {
+            for (int j = 0; j < currentArr.length(); j++) {
+                result.setBit(k, currentArr.bitAt(k));
+                k++;
+            }
+        }
+        return result;
+    }
+
     public String writeBits() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -93,5 +120,76 @@ public class BitArr {
     @Override
     public String toString() {
         return "BitArr{" + writeBits() + "}";
+    }
+
+    public BitArr[] split(int divisions) {
+        int notLast = divisions - 1;
+        int sizeNotLast = (size + notLast) / divisions;
+        int sizeLast = size - notLast * divisions;
+
+        BitArr[] bitSets = new BitArr[divisions];
+        int k = 0;
+        for (int i = 0; i < divisions; i++) {
+            bitSets[i] = new BitArr(sizeNotLast);
+            int sizeLimit = (i == divisions - 1) ? sizeNotLast : sizeLast;
+            for (int j = 0; j < sizeLimit; j++) {
+                k++;
+                bitSets[i].setBit(j, bitAt(k));
+            }
+        }
+        return bitSets;
+    }
+
+    public BitArr getBits(int... bits) {
+        BitArr bitArr = new BitArr(bits.length);
+        for (int i = 0; i < bits.length; i++) {
+            bitArr.setBit(i, bitAt(bits[i]));
+        }
+        return bitArr;
+    }
+    public BitArr getRange(int fromInclusive, int toInclusive) {
+        if (toInclusive < fromInclusive) {
+            throw new EncryptException("Cannot get subset of bits: [" + fromInclusive + ", " + toInclusive + ")");
+        }
+        BitSet bitSet = buffer.get(fromInclusive, toInclusive+1);
+        return new BitArr(toInclusive + 1 - fromInclusive, bitSet);
+    }
+
+    public BitArr cycledShiftLeft(int steps) {
+        BitArr result = new BitArr(size);
+        int current = steps;
+        for (int i = 0; i < size; i++) {
+            result.setBit(i, result.bitAt(current));
+            current++;
+            if (current == size) {
+                current = 0;
+            }
+        }
+        return result;
+    }
+
+    public BitArr[] splitToSizedBlocks(int blockSize) {
+        int divisions = (size + blockSize - 1) / blockSize;
+        BitArr[] bitSets = new BitArr[divisions];
+        int k = 0;
+        int lastIndex = divisions - 1;
+        for (int i = 0; i < lastIndex; i++) {
+            bitSets[i] = new BitArr(blockSize);
+            for (int j = 0; j < blockSize; j++) {
+                bitSets[i].setBit(j, bitAt(k));
+                k++;
+            }
+        }
+        for (int j = 0; j < blockSize; j++) {
+            bitSets[lastIndex].setBit(j, k < size ? bitAt(k) : Bit.zero());
+            k++;
+        }
+
+        return bitSets;
+    }
+
+    public BitArr subs(int fromInclusive, int toExclusive) {
+        BitSet bitSet = buffer.get(fromInclusive, toExclusive);
+        return new BitArr(toExclusive - fromInclusive, bitSet);
     }
 }

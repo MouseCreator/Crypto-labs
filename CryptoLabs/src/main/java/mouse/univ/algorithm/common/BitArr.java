@@ -3,7 +3,6 @@ package mouse.univ.algorithm.common;
 import lombok.Getter;
 import mouse.univ.exception.EncryptException;
 
-import java.nio.ByteBuffer;
 import java.util.BitSet;
 public class BitArr {
     private final BitSet buffer;
@@ -14,6 +13,9 @@ public class BitArr {
         this.buffer = new BitSet(size);
         this.size = size;
     }
+    public byte[] getBytes() {
+        return buffer.toByteArray();
+    }
 
     public BitArr(int size, BitSet buffer) {
         this.buffer = buffer;
@@ -23,9 +25,10 @@ public class BitArr {
 
     public static BitArr fromInt(int intValue, int bufferSize) {
         BitArr bitArr = new BitArr(bufferSize);
+        int s = bufferSize - 1;
         for (int i = 0; i < bufferSize; i++) {
             if ((intValue & (1 << i)) != 0) {
-                bitArr.setBit(i, Bit.one());
+                bitArr.setBit(s - i, Bit.one());
             }
         }
         return bitArr;
@@ -33,19 +36,40 @@ public class BitArr {
 
     public static BitArr mergeAll(BitArr[] orderedArr) {
         int expectedSize = 0;
-        for (int i = 0; i < orderedArr.length; i++) {
-            expectedSize += orderedArr.length;
+        for (BitArr bitArr : orderedArr) {
+            expectedSize += bitArr.length();
         }
 
         BitArr result = new BitArr(expectedSize);
         int k = 0;
         for (BitArr currentArr : orderedArr) {
             for (int j = 0; j < currentArr.length(); j++) {
-                result.setBit(k, currentArr.bitAt(k));
+                result.setBit(k, currentArr.bitAt(j));
                 k++;
             }
         }
         return result;
+    }
+
+    public static BitArr fromBytes(byte[] byteArray, int bitsCount) {
+        BitArr bitArr = new BitArr(bitsCount);
+        readBytes(byteArray, bitArr, bitsCount);
+        return bitArr;
+    }
+
+    private static void readBytes(byte[] byteArray, BitArr bitArr, int bitsCount) {
+        int k = 0;
+        for (byte currentByte : byteArray) {
+            for (int j = 0; j < 8; j++) {
+                if ((currentByte & (1 << j)) != 0) {
+                    bitArr.setBit(k, Bit.one());
+                }
+                k++;
+                if (k >= bitsCount) {
+                    return;
+                }
+            }
+        }
     }
 
     public String writeBits() {
@@ -59,8 +83,16 @@ public class BitArr {
 
 
     public int intValue() {
-        ByteBuffer wrapped = ByteBuffer.wrap(buffer.toByteArray());
-        return wrapped.getInt();
+        int v = 0;
+        int current = 1;
+        for (int i = size - 1; i >= 0; i--) {
+           if (bitAt(i).asBoolean()) {
+                v += current;
+           }
+           current = current << 1;
+        }
+
+        return v;
     }
 
     public void clear() {
@@ -78,15 +110,19 @@ public class BitArr {
     }
 
     public static BitArr fromString(String bits) {
-        BitArr bitArr = new BitArr(bits.length());
+        String replaced = bits.replaceAll("[^01]", "");
+        BitArr bitArr = new BitArr(replaced.length());
         int i = -1;
-        for (char ch : bits.toCharArray()) {
+        for (char ch : replaced.toCharArray()) {
             i++;
             if (ch == '0') {
                 bitArr.setBit(i, Bit.of(0));
             }
             else if (ch == '1') {
                 bitArr.setBit(i, Bit.of(1));
+            }
+            else {
+                throw new EncryptException("Unexpected char: " + ch);
             }
         }
         return bitArr;
@@ -125,7 +161,7 @@ public class BitArr {
     public BitArr[] split(int divisions) {
         int notLast = divisions - 1;
         int sizeNotLast = (size + notLast) / divisions;
-        int sizeLast = size - notLast * divisions;
+        int sizeLast = size - notLast * sizeNotLast;
 
         BitArr[] bitSets = new BitArr[divisions];
         int k = 0;
@@ -133,8 +169,8 @@ public class BitArr {
             bitSets[i] = new BitArr(sizeNotLast);
             int sizeLimit = (i == divisions - 1) ? sizeNotLast : sizeLast;
             for (int j = 0; j < sizeLimit; j++) {
-                k++;
                 bitSets[i].setBit(j, bitAt(k));
+                k++;
             }
         }
         return bitSets;
@@ -159,7 +195,7 @@ public class BitArr {
         BitArr result = new BitArr(size);
         int current = steps;
         for (int i = 0; i < size; i++) {
-            result.setBit(i, result.bitAt(current));
+            result.setBit(i, this.bitAt(current));
             current++;
             if (current == size) {
                 current = 0;
@@ -180,6 +216,7 @@ public class BitArr {
                 k++;
             }
         }
+        bitSets[lastIndex] = new BitArr(blockSize);
         for (int j = 0; j < blockSize; j++) {
             bitSets[lastIndex].setBit(j, k < size ? bitAt(k) : Bit.zero());
             k++;

@@ -22,7 +22,7 @@ public class PermutationImpl implements Permutation {
         BitArr result = new BitArr(table.length);
         for (int i = 0; i < table.length; i++) {
             int bit = table[i];
-            Bit currentBit = initial.bitAt(bit);
+            Bit currentBit = initial.bitAt(bit-1);
             result.setBit(i, currentBit);
         }
 

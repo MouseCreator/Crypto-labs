@@ -42,4 +42,15 @@ class BitArrTest {
         BitArr cloned = bitArr.clone();
         assertEquals(str, cloned.writeBits());
     }
+    @Test
+    void addTest() {
+        String str1 = "101111";
+        String str2 = "111000";
+        BitArr num1 = BitArr.fromBinary(str1);
+        BitArr num2 = BitArr.fromBinary(str2);
+        assertEquals(47, num1.intValue());
+        assertEquals(56, num2.intValue());
+        BitArr added = num1.add(num2);
+        assertEquals("100111", added.writeBits());
+    }
 }

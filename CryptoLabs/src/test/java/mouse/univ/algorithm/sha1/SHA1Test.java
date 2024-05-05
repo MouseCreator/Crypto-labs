@@ -19,6 +19,8 @@ class SHA1Test {
     @Test
     void hash() {
         BitArr bitArr = mapper.fromMessage("Hello");
-        sha1.hash(bitArr);
+        BitArr hash = sha1.hash(bitArr);
+        String hashStr = hash.writeHex();
+        assertEquals("f7ff9e8b7bb2e09b70935a5d785e0cc5d9d0abf0", hashStr);
     }
 }

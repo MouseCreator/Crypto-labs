@@ -42,12 +42,12 @@ public class BitArr implements Cloneable {
             case '7' -> BitArr.fromBinary("0111");
             case '8' -> BitArr.fromBinary("1000");
             case '9' -> BitArr.fromBinary("1001");
-            case 'A' -> BitArr.fromBinary("1010");
-            case 'B' -> BitArr.fromBinary("1011");
-            case 'C' -> BitArr.fromBinary("1100");
-            case 'D' -> BitArr.fromBinary("1101");
-            case 'E' -> BitArr.fromBinary("1110");
-            case 'F' -> BitArr.fromBinary("1111");
+            case 'A', 'a' -> BitArr.fromBinary("1010");
+            case 'B', 'b' -> BitArr.fromBinary("1011");
+            case 'C', 'c' -> BitArr.fromBinary("1100");
+            case 'D', 'd' -> BitArr.fromBinary("1101");
+            case 'E', 'e' -> BitArr.fromBinary("1110");
+            case 'F', 'f' -> BitArr.fromBinary("1111");
             default -> throw new IllegalArgumentException("Hex contains illegal character: " + ch);
         };
     }
@@ -123,6 +123,22 @@ public class BitArr implements Cloneable {
         }
         return builder.toString();
     }
+    public String writeHex() {
+        StringBuilder builder = new StringBuilder();
+        int hexSize = (size + 3) / 4;
+        for (int i = 0; i < hexSize; i++) {
+            int hexDigit = 0;
+            for (int j = 0; j < 4; j++) {
+                int bitIndex = i * 4 + j;
+                if (bitIndex < size && buffer.get(bitIndex)) {
+                    hexDigit |= 1 << (3 - j);
+                }
+            }
+            builder.append(Integer.toHexString(hexDigit));
+        }
+        return builder.toString();
+    }
+
 
 
     public int intValue() {
@@ -289,25 +305,27 @@ public class BitArr implements Cloneable {
         boolean memory = false;
         BitArr result = new BitArr(size);
         for (int i = size - 1; i >= 0; i--) {
+            boolean b1 = bitAt(i).asBoolean();
+            boolean b2 = other.bitAt(i).asBoolean();
             if (memory) {
-                if (bitAt(i).asBoolean() && other.bitAt(i).asBoolean()) {
-                    result.setBit(0, Bit.one());
+                if (b1 && b2) {
+                    result.setBit(i, Bit.one());
                 }
-                else if (bitAt(i).asBoolean() || other.bitAt(i).asBoolean()) {
-                    result.setBit(0, Bit.zero());
+                else if (b1 || b2) {
+                    result.setBit(i, Bit.zero());
                 } else {
-                    result.setBit(0, Bit.one());
+                    result.setBit(i, Bit.one());
                     memory = false;
                 }
             } else {
-                if (bitAt(i).asBoolean() && other.bitAt(i).asBoolean()) {
-                    result.setBit(0, Bit.zero());
+                if (b1 && b2) {
+                    result.setBit(i, Bit.zero());
                     memory = true;
                 }
-                else if (bitAt(i).asBoolean() || other.bitAt(i).asBoolean()) {
-                    result.setBit(0, Bit.one());
+                else if (b1 || b2) {
+                    result.setBit(i, Bit.one());
                 } else {
-                    result.setBit(0, Bit.zero());
+                    result.setBit(i, Bit.zero());
                 }
             }
 

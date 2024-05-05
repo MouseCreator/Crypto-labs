@@ -36,11 +36,9 @@ public class BitArr {
         return wrapped.getInt();
     }
 
-
     public void clear() {
         buffer.clear();
     }
-
 
     public BitArr xor(BitArr other) {
         if (this.length() != other.length()) {
@@ -73,12 +71,18 @@ public class BitArr {
 
 
     public Bit bitAt(int bit) {
+        validateSize(bit);
         boolean isOne = buffer.get(bit);
         return Bit.of(isOne);
     }
 
-
+    private void validateSize(int index) {
+        if (index < 0 || index >= size) {
+            throw new EncryptException("Invalid index " + index + " for bit array of size " + size);
+        }
+    }
     public void setBit(int position, Bit currentBit) {
+        validateSize(position);
         if (currentBit.asBoolean()) {
             buffer.set(position);
         } else {

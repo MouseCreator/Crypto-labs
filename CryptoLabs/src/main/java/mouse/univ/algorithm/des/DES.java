@@ -20,7 +20,7 @@ public class DES {
         this.permutation = permutation;
     }
     public BitArr encryptECB(BitArr message, BitArr key) {
-        BitArr extendedMessage = BitArr.mergeAll(new BitArr[]{message, BitArr.fromString("10000000")});
+        BitArr extendedMessage = BitArr.mergeAll(new BitArr[]{message, BitArr.fromBinary("10000000")});
         BitArr[] result = DESBlocks(key, extendedMessage, true);
         return BitArr.mergeAll(result);
     }

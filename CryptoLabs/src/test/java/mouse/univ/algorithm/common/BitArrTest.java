@@ -8,15 +8,15 @@ class BitArrTest {
 
     @Test
     void xor() {
-        BitArr b1 = BitArr.fromString("1001011");
-        BitArr b2 = BitArr.fromString("0101101");
+        BitArr b1 = BitArr.fromBinary("1001011");
+        BitArr b2 = BitArr.fromBinary("0101101");
         BitArr xor = b1.xor(b2);
         assertEquals("1100110", xor.writeBits());
     }
     @Test
     void shift() {
         String s = "1001011001001";
-        BitArr b1 = BitArr.fromString(s);
+        BitArr b1 = BitArr.fromBinary(s);
         String prev = s;
         for (int i = 0; i < 10; i++) {
             String right = i > 0 ? s.substring(i) : s;

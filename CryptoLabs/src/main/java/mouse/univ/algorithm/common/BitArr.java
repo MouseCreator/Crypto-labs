@@ -13,6 +13,47 @@ public class BitArr {
         this.buffer = new BitSet(size);
         this.size = size;
     }
+
+    public static BitArr fromHex(String s) {
+        s = s.replaceAll("\\s", "");
+        if (s.startsWith("0x")) {
+            s = s.substring(2);
+        }
+        char[] chars = s.toCharArray();
+        BitArr[] bitArrs = new BitArr[chars.length];
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            bitArrs[i] = convertHex(ch);
+        }
+        return BitArr.mergeAll(bitArrs);
+    }
+
+    private static BitArr convertHex(char ch) {
+        return switch (ch) {
+            case '0' -> BitArr.fromBinary("0000");
+            case '1' -> BitArr.fromBinary("0001");
+            case '2' -> BitArr.fromBinary("0010");
+            case '3' -> BitArr.fromBinary("0011");
+            case '4' -> BitArr.fromBinary("0100");
+            case '5' -> BitArr.fromBinary("0101");
+            case '6' -> BitArr.fromBinary("0110");
+            case '7' -> BitArr.fromBinary("0111");
+            case '8' -> BitArr.fromBinary("1000");
+            case '9' -> BitArr.fromBinary("1001");
+            case 'A' -> BitArr.fromBinary("1010");
+            case 'B' -> BitArr.fromBinary("1011");
+            case 'C' -> BitArr.fromBinary("1100");
+            case 'D' -> BitArr.fromBinary("1101");
+            case 'E' -> BitArr.fromBinary("1110");
+            case 'F' -> BitArr.fromBinary("1111");
+            default -> throw new IllegalArgumentException("Hex contains illegal character: " + ch);
+        };
+    }
+
+    public static BitArr zeros(int k) {
+        return new BitArr(k);
+    }
+
     public byte[] getBytes() {
         return buffer.toByteArray();
     }
@@ -26,14 +67,14 @@ public class BitArr {
     public static BitArr fromInt(int intValue, int bufferSize) {
         BitArr bitArr = new BitArr(bufferSize);
         int s = bufferSize - 1;
-        for (int i = 0; i < bufferSize; i++) {
+        int maxShift = 32;
+        for (int i = 0; i < maxShift; i++) {
             if ((intValue & (1 << i)) != 0) {
                 bitArr.setBit(s - i, Bit.one());
             }
         }
         return bitArr;
     }
-
     public static BitArr mergeAll(BitArr[] orderedArr) {
         int expectedSize = 0;
         for (BitArr bitArr : orderedArr) {
@@ -109,7 +150,7 @@ public class BitArr {
         return new BitArr(size, resultSet);
     }
 
-    public static BitArr fromString(String bits) {
+    public static BitArr fromBinary(String bits) {
         String replaced = bits.replaceAll("[^01]", "");
         BitArr bitArr = new BitArr(replaced.length());
         int i = -1;

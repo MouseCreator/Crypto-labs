@@ -19,7 +19,12 @@ public class SeededKeyGenerator implements KeyGenerator {
     }
 
     @Override
-    public BigInteger generateKey(int bits) {
+    public BigInteger generateKeyBits(int bits) {
         return new BigInteger(bits, random);
+    }
+
+    @Override
+    public BigInteger generateKeyBytes(int bytes) {
+        return new BigInteger(bytes*8, random);
     }
 }

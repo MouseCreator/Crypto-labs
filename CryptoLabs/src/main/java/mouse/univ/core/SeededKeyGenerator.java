@@ -1,9 +1,11 @@
 package mouse.univ.core;
 
+import org.springframework.stereotype.Service;
+
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
-
+@Service
 public class SeededKeyGenerator implements KeyGenerator {
     private final SecureRandom random;
 

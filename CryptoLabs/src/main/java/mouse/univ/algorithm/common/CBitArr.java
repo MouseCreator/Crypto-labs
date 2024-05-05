@@ -12,7 +12,16 @@ public class CBitArr implements BitArr {
         this.bigInteger = BigInteger.valueOf(0);
     }
 
-    protected static CBitArr fromString(String bits) {
+    public String writeBits() {
+        return bigInteger.toString(2);
+    }
+
+    @Override
+    public int intValue() {
+        return bigInteger.intValue();
+    }
+
+    public static CBitArr fromString(String bits) {
         CBitArr bitArr = new CBitArr();
         for (char ch : bits.toCharArray()) {
             if (ch == '0') {
@@ -26,7 +35,7 @@ public class CBitArr implements BitArr {
     }
     @Override
     public int length() {
-        return bigInteger.bitCount();
+        return bigInteger.bitLength();
     }
 
     @Override
@@ -36,9 +45,11 @@ public class CBitArr implements BitArr {
     }
 
     @Override
-    public void pushBit(Bit currentBit) {
-        BigInteger pushed = BigInteger.valueOf(currentBit.asInt());
-        bigInteger = bigInteger.shiftLeft(1)
-                .add(pushed);
+    public void pushBit(Bit newBit) {
+        bigInteger = bigInteger.shiftLeft(1);
+        if (newBit.asBoolean()) {
+            bigInteger = bigInteger.setBit(0);
+        }
+
     }
 }

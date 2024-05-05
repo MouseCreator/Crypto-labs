@@ -15,7 +15,18 @@ public class Bit {
         return new Bit(isOne);
     }
 
+    public static Bit zero() {
+        return new Bit(false);
+    }
+    public static Bit one() {
+        return new Bit(true);
+    }
+
     public int asInt() {
         return value ? 1 : 0;
+    }
+
+    public boolean asBoolean() {
+        return value;
     }
 }

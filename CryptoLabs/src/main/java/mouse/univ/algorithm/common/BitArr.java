@@ -1,10 +1,12 @@
 package mouse.univ.algorithm.common;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import mouse.univ.exception.EncryptException;
 
 import java.util.BitSet;
-public class BitArr {
+@EqualsAndHashCode
+public class BitArr implements Cloneable {
     private final BitSet buffer;
     @Getter
     private final int size;
@@ -136,15 +138,8 @@ public class BitArr {
         return v;
     }
 
-    public void clear() {
-        buffer.clear();
-    }
-
     public BitArr xor(BitArr other) {
-        if (this.length() != other.length()) {
-            throw new EncryptException("Cannot apply XOR operator to bit arrays of different size: "
-                    + this.length() + " and " + other.length());
-        }
+        validateOtherSize(other, "XOR");
         BitSet resultSet = (BitSet) buffer.clone();
         resultSet.xor(other.buffer);
         return new BitArr(size, resultSet);
@@ -269,5 +264,71 @@ public class BitArr {
     public BitArr subs(int fromInclusive, int toExclusive) {
         BitSet bitSet = buffer.get(fromInclusive, toExclusive);
         return new BitArr(toExclusive - fromInclusive, bitSet);
+    }
+
+    public BitArr and(BitArr other) {
+        validateOtherSize(other, "AND");
+        BitSet resultSet = (BitSet) buffer.clone();
+        resultSet.and(other.buffer);
+        return new BitArr(size, resultSet);
+    }
+    public BitArr or(BitArr other) {
+        validateOtherSize(other, "OR");
+        BitSet resultSet = (BitSet) buffer.clone();
+        resultSet.or(other.buffer);
+        return new BitArr(size, resultSet);
+    }
+    public BitArr not() {
+        BitSet resultSet = (BitSet) buffer.clone();
+        resultSet.flip(0, size);
+        return new BitArr(size, resultSet);
+    }
+
+    public BitArr add(BitArr other) {
+        validateOtherSize(other, "ADD");
+        boolean memory = false;
+        BitArr result = new BitArr(size);
+        for (int i = size - 1; i >= 0; i--) {
+            if (memory) {
+                if (bitAt(i).asBoolean() && other.bitAt(i).asBoolean()) {
+                    result.setBit(0, Bit.one());
+                }
+                else if (bitAt(i).asBoolean() || other.bitAt(i).asBoolean()) {
+                    result.setBit(0, Bit.zero());
+                } else {
+                    result.setBit(0, Bit.one());
+                    memory = false;
+                }
+            } else {
+                if (bitAt(i).asBoolean() && other.bitAt(i).asBoolean()) {
+                    result.setBit(0, Bit.zero());
+                    memory = true;
+                }
+                else if (bitAt(i).asBoolean() || other.bitAt(i).asBoolean()) {
+                    result.setBit(0, Bit.one());
+                } else {
+                    result.setBit(0, Bit.zero());
+                }
+            }
+
+        }
+        return result;
+    }
+
+    private void validateOtherSize(BitArr other, String operation) {
+        if (this.length() != other.length()) {
+            throw new EncryptException("Cannot apply " + operation + " operator to bit arrays of different size: "
+                    + this.length() + " and " + other.length());
+        }
+    }
+
+    public BitArr clone() {
+        try {
+            Object clone = super.clone();
+            return (BitArr) clone;
+        } catch (CloneNotSupportedException e) {
+            throw new EncryptException(e);
+        }
+
     }
 }

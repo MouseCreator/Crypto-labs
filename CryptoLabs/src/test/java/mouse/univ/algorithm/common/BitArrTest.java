@@ -34,4 +34,12 @@ class BitArrTest {
         int i = bitArr.intValue();
         assertEquals(13, i);
     }
+
+    @Test
+    void cloneTest() {
+        String str = "100101";
+        BitArr bitArr = BitArr.fromBinary(str);
+        BitArr cloned = bitArr.clone();
+        assertEquals(str, cloned.writeBits());
+    }
 }

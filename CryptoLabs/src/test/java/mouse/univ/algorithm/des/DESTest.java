@@ -25,26 +25,26 @@ class DESTest {
     @Test
     void encryptECB() {
         BigInteger bigInteger = BigInteger.valueOf(10L);
-        BitArr bitArr = mapper.fromBigInteger(bigInteger, 4);
+        BitArr bitArr = mapper.bigIntegerToBitArr(bigInteger, 4);
         BigInteger keyInt = keyGen.generateKeyBits(56);
-        BitArr key = mapper.fromBigInteger(keyInt, 56);
+        BitArr key = mapper.bigIntegerToBitArr(keyInt, 56);
         BitArr encryptedMessage = des.encryptECB(bitArr, key);
 
         BitArr decrypted = des.decryptECB(encryptedMessage, key);
-        BigInteger newBigInteger = mapper.toBigInteger(decrypted);
+        BigInteger newBigInteger = mapper.bitArrToBigInteger(decrypted);
         assertEquals(bigInteger, newBigInteger);
     }
 
     @Test
     void encryptEBBMessage() {
         String message = "Hello, world!";
-        BitArr bitArr = mapper.fromMessage(message);
+        BitArr bitArr = mapper.stringToBitArr(message);
         BigInteger keyInt = keyGen.generateKeyBits(56);
-        BitArr key = mapper.fromBigInteger(keyInt, 56);
+        BitArr key = mapper.bigIntegerToBitArr(keyInt, 56);
         BitArr encryptedMessage = des.encryptECB(bitArr, key);
 
         BitArr decrypted = des.decryptECB(encryptedMessage, key);
-        String newMessage = mapper.toMessage(decrypted);
+        String newMessage = mapper.bitArrToString(decrypted);
         assertEquals(message, newMessage);
     }
 

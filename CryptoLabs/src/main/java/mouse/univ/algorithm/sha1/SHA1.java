@@ -39,9 +39,6 @@ public class SHA1 {
         BitArr a = h0, b = h1, c = h2, d = h3, e = h4;
         BitArr f, k;
         for (int i = 0; i < 80; i++) {
-            if (i == 18) {
-                System.out.println(19);
-            }
             if (i < 20) {
                 f = (b.and(c)).or(b.not().and(d));
                 k = k1;
@@ -64,20 +61,21 @@ public class SHA1 {
             a = t;
 
         }
-        resultSet[0].add(a);
-        resultSet[1].add(b);
-        resultSet[2].add(c);
-        resultSet[3].add(d);
-        resultSet[4].add(e);
+        resultSet[0] = resultSet[0].add(a);
+        resultSet[1] = resultSet[1].add(b);
+        resultSet[2] = resultSet[2].add(c);
+        resultSet[3] = resultSet[3].add(d);
+        resultSet[4] = resultSet[4].add(e);
     }
 
     private static BitArr preProcessMessage(BitArr message) {
         BitArr newMessage = BitArr.mergeAll(new BitArr[]{message, BitArr.fromBinary("10000000")});
-        int length = message.length();
+        int length = newMessage.length();
+        int originLen = message.length();
         int s = length >> 9;
         int modulo = length - (s << 9);
         int k = 512 - 64 - modulo;
-        BitArr sizeArr = BitArr.fromInt(length, 64);
+        BitArr sizeArr = BitArr.fromInt(originLen, 64);
         BitArr fullMessage = BitArr.mergeAll(new BitArr[]{newMessage, BitArr.zeros(k), sizeArr});
         assert fullMessage.length() % 512 == 0;
         return fullMessage;

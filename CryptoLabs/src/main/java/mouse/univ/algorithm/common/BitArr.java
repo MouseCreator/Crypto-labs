@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import mouse.univ.exception.EncryptException;
 
+import java.math.BigInteger;
 import java.util.BitSet;
 @EqualsAndHashCode
 public class BitArr implements Cloneable {
@@ -152,6 +153,21 @@ public class BitArr implements Cloneable {
         }
 
         return v;
+    }
+    public BigInteger bigIntegerValue() {
+        BigInteger v = BigInteger.ZERO;
+        BigInteger current = BigInteger.ONE;
+        for (int i = size - 1; i >= 0; i--) {
+            if (bitAt(i).asBoolean()) {
+                v = v.add(current);
+            }
+            current = current.multiply(BigInteger.TWO);
+        }
+
+        return v;
+    }
+    public String stringValue() {
+       return bigIntegerValue().toString(10);
     }
 
     public BitArr xor(BitArr other) {

@@ -63,7 +63,7 @@ public class SHA1 {
         resultSet[1].add(b);
         resultSet[2].add(c);
         resultSet[3].add(d);
-        resultSet[4].and(e);
+        resultSet[4].add(e);
     }
 
     private static BitArr preProcessMessage(BitArr message) {

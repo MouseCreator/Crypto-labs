@@ -53,4 +53,13 @@ class BitArrTest {
         BitArr added = num1.add(num2);
         assertEquals("100111", added.writeBits());
     }
+
+    @Test
+    void addTestHex() {
+        BitArr bitArr1 = BitArr.fromHex("0x1A3");
+        BitArr bitArr2 = BitArr.fromHex("0x2C5");
+        BitArr result = bitArr1.add(bitArr2);
+        BitArr expected = BitArr.fromHex("0x468");
+        assertEquals(expected, result);
+    }
 }

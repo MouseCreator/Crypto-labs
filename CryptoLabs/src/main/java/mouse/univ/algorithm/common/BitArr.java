@@ -57,8 +57,42 @@ public class BitArr implements Cloneable {
         return new BitArr(k);
     }
 
+    public static BitArr mergeAllReverse(BitArr[] orderedArr) {
+        int expectedSize = 0;
+        for (BitArr bitArr : orderedArr) {
+            expectedSize += bitArr.length();
+        }
+
+        BitArr result = new BitArr(expectedSize);
+        int k = 0;
+        for (int i = orderedArr.length - 1; i >= 0 ; i--) {
+            BitArr currentArr = orderedArr[i];
+            for (int j = 0; j < currentArr.length(); j++) {
+                result.setBit(k, currentArr.bitAt(j));
+                k++;
+            }
+        }
+        return result;
+    }
+
     public byte[] getBytes() {
-        return buffer.toByteArray();
+        byte[] byteArray = buffer.toByteArray();
+        byte[] result = new byte[byteArray.length];
+        for (int i = 0; i < byteArray.length; i++) {
+            byte b = byteArray[i];
+            result[i] = reverseBits(b);
+        }
+        return result;
+
+    }
+    public static byte reverseBits(byte b) {
+        byte result = 0;
+        for (int i = 0; i < 8; i++) {
+            result <<= 1;
+            if ((b & 1) == 1) result |= 1;
+            b >>= 1;
+        }
+        return result;
     }
 
     public BitArr(int size, BitSet buffer) {
@@ -104,7 +138,7 @@ public class BitArr implements Cloneable {
     private static void readBytes(byte[] byteArray, BitArr bitArr, int bitsCount) {
         int k = 0;
         for (byte currentByte : byteArray) {
-            for (int j = 0; j < 8; j++) {
+            for (int j = 7; j >= 0; j--) {
                 if ((currentByte & (1 << j)) != 0) {
                     bitArr.setBit(k, Bit.one());
                 }
@@ -223,7 +257,16 @@ public class BitArr implements Cloneable {
 
     @Override
     public String toString() {
-        return "BitArr{" + writeBits() + "}";
+        return "BitArr{" + writeBits() + "}: " + intValue();
+    }
+
+    public BitArr reverse() {
+        BitArr bitArr = new BitArr(this.size);
+        for (int i = 0; i < size; i++) {
+            int j = size - 1 - i;
+            bitArr.setBit(j, bitAt(i));
+        }
+        return bitArr;
     }
 
     public BitArr[] split(int divisions) {

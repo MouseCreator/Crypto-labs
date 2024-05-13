@@ -62,4 +62,11 @@ class BitArrTest {
         BitArr expected = BitArr.fromHex("0x468");
         assertEquals(expected, result);
     }
+    @Test
+    void testHex() {
+        String text = "123a";
+        BitArr fromHex = BitArr.fromHex(text);
+        String s = fromHex.writeHex();
+        assertEquals(text, s);
+    }
 }

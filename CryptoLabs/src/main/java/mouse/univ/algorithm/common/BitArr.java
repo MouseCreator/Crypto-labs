@@ -137,13 +137,17 @@ public class BitArr implements Cloneable {
 
     private static void readBytes(byte[] byteArray, BitArr bitArr, int bitsCount) {
         int k = 0;
-        for (byte currentByte : byteArray) {
-            for (int j = 7; j >= 0; j--) {
+        int count = 0;
+        int byteArrayLength = byteArray.length;
+        for (int i = byteArrayLength - 1 ; i >= 0; i--) {
+            byte currentByte = byteArray[i];
+            for (int j = 0; j < 8; j++) {
                 if ((currentByte & (1 << j)) != 0) {
-                    bitArr.setBit(k, Bit.one());
+                    bitArr.setBit(bitsCount - 1 - k, Bit.one());
                 }
                 k++;
-                if (k >= bitsCount) {
+                count++;
+                if (count >= bitsCount) {
                     return;
                 }
             }
@@ -257,7 +261,7 @@ public class BitArr implements Cloneable {
 
     @Override
     public String toString() {
-        return "BitArr{" + writeBits() + "}: " + intValue();
+        return "BitArr{" + writeBits() + "}";
     }
 
     public BitArr reverse() {

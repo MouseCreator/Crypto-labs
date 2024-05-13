@@ -13,8 +13,7 @@ public class Mapper {
         return BitArr.fromBytes(byteArray, bits);
     }
     public BigInteger bitArrToBigInteger(BitArr bitArr) {
-        byte[] byteArray = bitArr.getBytes();
-        return new BigInteger(byteArray);
+        return bitArr.bigIntegerValue();
     }
 
     public BitArr stringToBitArr(String message) {

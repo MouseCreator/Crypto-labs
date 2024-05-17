@@ -11,7 +11,29 @@ class BitArrTest {
         BitArr b1 = BitArr.fromBinary("1001011");
         BitArr b2 = BitArr.fromBinary("0101101");
         BitArr xor = b1.xor(b2);
+        BitArr xor2 = b1.xor(b2);
         assertEquals("1100110", xor.writeBits());
+        assertEquals(xor, xor2);
+    }
+
+    @Test
+    void or() {
+        BitArr b1 = BitArr.fromBinary("100100");
+        BitArr b2 = BitArr.fromBinary("010101");
+        BitArr or = b1.or(b2);
+        BitArr or2 = b2.or(b1);
+        assertEquals("110101", or.writeBits());
+        assertEquals(or, or2);
+    }
+
+    @Test
+    void and() {
+        BitArr b1 = BitArr.fromBinary("10101");
+        BitArr b2 = BitArr.fromBinary("11001");
+        BitArr and = b1.and(b2);
+        BitArr and2 = b2.and(b1);
+        assertEquals("10001", and.writeBits());
+        assertEquals(and, and2);
     }
     @Test
     void shift() {

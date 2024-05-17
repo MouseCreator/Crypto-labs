@@ -19,13 +19,20 @@ public class RSA {
     }
     public BigInteger[] generatePQ() {
         BigInteger[] pq = new BigInteger[2];
-        pq[0] = getProbablePrime();
-        pq[1] = getProbablePrime();
+        pq[0] = getPrime();
+        pq[1] = getPrime();
         return pq;
     }
 
-    private BigInteger getProbablePrime() {
-        return BigInteger.probablePrime(2048, random);
+    private BigInteger getPrime() {
+        BigInteger number;
+        do {
+            number = BigInteger.probablePrime(2048, random);
+        } while (!isPrime(number));
+        return number;
+    }
+    private boolean isPrime(BigInteger number) {
+        return number.isProbablePrime(10);
     }
     public BigInteger getEncryptionExponent(BigInteger p, BigInteger q) {
         return BigInteger.valueOf(65537L);

@@ -1,8 +1,10 @@
 package mouse.univ.algorithm.rsa;
 
+import org.springframework.stereotype.Service;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
-
+@Service
 public class RSA {
 
     private final SecureRandom random;

@@ -1,8 +1,10 @@
 package mouse.univ.algorithm.des;
 
 import mouse.univ.algorithm.common.BitArr;
+import mouse.univ.algorithm.common.Permutation;
 import mouse.univ.algorithm.common.PermutationImpl;
 import mouse.univ.algorithm.common.mapper.Mapper;
+import mouse.univ.config.Ioc;
 import mouse.univ.core.SeededKeyGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,8 @@ class DESTest {
     private SeededKeyGenerator keyGen;
     @BeforeEach
     void setUp() {
-        des = new DES(new PermutationImpl());
-        mapper = new Mapper();
+        des = Ioc.get().getBean(DES.class);;
+        mapper = Ioc.get().getBean(Mapper.class);
         keyGen = new SeededKeyGenerator(1L);
     }
 

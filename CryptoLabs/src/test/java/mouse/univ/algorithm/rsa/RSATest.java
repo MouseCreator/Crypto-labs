@@ -1,6 +1,7 @@
 package mouse.univ.algorithm.rsa;
 
 import mouse.univ.algorithm.common.mapper.Mapper;
+import mouse.univ.config.Ioc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +14,8 @@ class RSATest {
     private Mapper mapper;
     @BeforeEach
     void setUp() {
-        rsa = new RSA();
-        mapper = new Mapper();
+        rsa = Ioc.get().getBean(RSA.class);
+        mapper = Ioc.get().getBean(Mapper.class);
     }
     @Test
     void testSmallNumbers() {

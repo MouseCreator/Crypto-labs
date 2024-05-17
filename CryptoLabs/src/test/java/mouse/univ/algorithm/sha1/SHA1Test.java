@@ -2,6 +2,7 @@ package mouse.univ.algorithm.sha1;
 
 import mouse.univ.algorithm.common.BitArr;
 import mouse.univ.algorithm.common.mapper.Mapper;
+import mouse.univ.config.Ioc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,8 @@ class SHA1Test {
     private Mapper mapper;
     @BeforeEach
     void setUp() {
-        sha1 = new SHA1();
-        mapper = new Mapper();
+        sha1 = Ioc.get().getBean(SHA1.class);
+        mapper = Ioc.get().getBean(Mapper.class);
     }
 
     @Test

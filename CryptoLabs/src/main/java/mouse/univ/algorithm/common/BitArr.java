@@ -2,7 +2,7 @@ package mouse.univ.algorithm.common;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import mouse.univ.exception.EncryptException;
+import mouse.univ.exception.BitException;
 
 import java.math.BigInteger;
 import java.util.BitSet;
@@ -228,7 +228,7 @@ public class BitArr implements Cloneable {
                 bitArr.setBit(i, Bit.of(1));
             }
             else {
-                throw new EncryptException("Unexpected char: " + ch);
+                throw new BitException("Unexpected char: " + ch);
             }
         }
         return bitArr;
@@ -247,7 +247,7 @@ public class BitArr implements Cloneable {
 
     private void validateSize(int index) {
         if (index < 0 || index >= size) {
-            throw new EncryptException("Invalid index " + index + " for bit array of size " + size);
+            throw new BitException("Invalid index " + index + " for bit array of size " + size);
         }
     }
     public void setBit(int position, Bit currentBit) {
@@ -300,7 +300,7 @@ public class BitArr implements Cloneable {
     }
     public BitArr getRange(int fromInclusive, int toInclusive) {
         if (toInclusive < fromInclusive) {
-            throw new EncryptException("Cannot get subset of bits: [" + fromInclusive + ", " + toInclusive + ")");
+            throw new BitException("Cannot get subset of bits: [" + fromInclusive + ", " + toInclusive + ")");
         }
         BitSet bitSet = buffer.get(fromInclusive, toInclusive+1);
         return new BitArr(toInclusive + 1 - fromInclusive, bitSet);
@@ -398,7 +398,7 @@ public class BitArr implements Cloneable {
 
     private void validateOtherSize(BitArr other, String operation) {
         if (this.length() != other.length()) {
-            throw new EncryptException("Cannot apply " + operation + " operator to bit arrays of different size: "
+            throw new BitException("Cannot apply " + operation + " operator to bit arrays of different size: "
                     + this.length() + " and " + other.length());
         }
     }
@@ -408,7 +408,7 @@ public class BitArr implements Cloneable {
             Object clone = super.clone();
             return (BitArr) clone;
         } catch (CloneNotSupportedException e) {
-            throw new EncryptException(e);
+            throw new RuntimeException(e);
         }
 
     }

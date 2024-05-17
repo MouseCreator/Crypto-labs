@@ -71,10 +71,11 @@ public class DES {
         for (int i = 0; i < NUM_ROUNDS; i++) {
             BitArr currentKey = subkeys[i];
             BitArr round = roundFunction(right, currentKey);
-            right = left.xor(round);
+            BitArr newRight = left.xor(round);
             left = right;
+            right = newRight;
         }
-        return block;
+        return BitArr.mergeAll(new BitArr[]{right, left});
     }
 
     private BitArr[] createSubkeys(BitArr key, boolean encrypting) {
